@@ -11,7 +11,7 @@ COPY ./pw.arron.id/package.json /var/www/pw.arron.id
 
 WORKDIR /var/www/pw.arron.id/
 
-RUN npm install
+RUN yarn install
 
 COPY ./pw.arron.id /var/www/pw.arron.id
 

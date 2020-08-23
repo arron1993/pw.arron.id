@@ -1,0 +1,25 @@
+
+---
+version: 0.2
+phases:
+  pre_build:
+    commands:
+      - $(aws ecr get-login --region $AWS_DEFAULT_REGION --no-include-email)
+      - IMAGE_TAG=build-$(echo $CODEBUILD_BUILD_ID | awk -F":" '{print $2}')
+  install:
+    runtime-versions:
+      docker: 19
+  build:
+    commands:
+      - >
+        docker build -t $REPO_URI:latest .
+      - docker tag $REPO_URI:latest $REPO_URI:$IMAGE_TAG
+
+  post_build:
+    commands:
+      - docker push $REPO_URI:latest
+      - docker push $REPO_URI:$IMAGE_TAG
+      - printf '{"ImageURI":"%s:%s"}' $REPO_URI latest > imagedefinitions.json
+artifacts:
+  files:
+    - imagedefinitions.json
