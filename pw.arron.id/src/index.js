@@ -95,7 +95,12 @@ class App extends React.Component {
 
         <div className="row">
           <div className="col-12">
-            <label> <input onChange={(e) => this.toggleSpecialCharacters(e)} type="checkbox" name="special-characters"></input> Special Characters </label>
+            <label>
+              <input onChange={(e) => this.toggleSpecialCharacters(e)}
+                type="checkbox"
+                name="special-characters">
+              </input>
+              Special Characters </label>
           </div>
         </div>
       </div>
