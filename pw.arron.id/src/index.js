@@ -15,6 +15,7 @@ class App extends React.Component {
     };
     this.getRandomNumber = this.getRandomNumber.bind(this);
     this.addSpecialCharactersModifier = this.addSpecialCharactersModifier.bind(this);
+    this.lengthModifier = this.lengthModifier.bind(this);
   }
 
   setType(pwType) {
@@ -43,6 +44,7 @@ class App extends React.Component {
       'words': this.randomWords,
     };
     let password = methodMap[this.state.pwType]();
+
     for (const modifier of this.state.modifiers) {
       password = modifier(password);
     }
@@ -56,6 +58,17 @@ class App extends React.Component {
       this.setState({modifiers: modifiers});
     } else {
       const modifiers = this.state.modifiers.filter((x) => x !== this.addSpecialCharactersModifier);
+      this.setState({modifiers: modifiers});
+    }
+  }
+
+  toggleLengthModifier(e) {
+    if (e.target.checked) {
+      const modifiers = this.state.modifiers;
+      modifiers.push(this.lengthModifier);
+      this.setState({modifiers: modifiers});
+    } else {
+      const modifiers = this.state.modifiers.filter((x) => x !== this.lengthModifier);
       this.setState({modifiers: modifiers});
     }
   }
@@ -82,6 +95,14 @@ class App extends React.Component {
     return modifiedPassword;
   }
 
+  lengthModifier(password) {
+    let length = document.querySelector('input[name="password-length"]').value;
+    if (length > password.length) {
+      length = password.length;
+    }
+    return password.substring(0, length);
+  }
+
   render() {
     return (
       <div className='container'>
@@ -100,7 +121,18 @@ class App extends React.Component {
                 type="checkbox"
                 name="special-characters">
               </input>
-              Special Characters </label>
+              Special Characters
+            </label>
+          </div>
+          <div className="col-12">
+            <label>
+              <input onChange={(e) => this.toggleLengthModifier(e)}
+                type="checkbox"
+                name="set-length">
+              </input>
+              Restrict Length
+              <input type="number" name="password-length" defaultValue="16"></input>
+            </label>
           </div>
         </div>
       </div>
