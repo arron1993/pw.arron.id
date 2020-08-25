@@ -29,12 +29,10 @@ class App extends React.Component {
     window.crypto.getRandomValues(randomNumbers);
 
     for (let i = 0; i < count; i++) {
-      console.log(i);
       const randomNum = randomNumbers[i] % wordList.length;
 
       words.push(wordList[randomNum]);
     }
-    console.log(words);
     return words.join('-');
   }
 
@@ -46,7 +44,8 @@ class App extends React.Component {
     let password = methodMap[this.state.pwType]();
 
     for (const modifier of this.state.modifiers) {
-      password = modifier(password);
+      let tmpPassword = modifier(password);
+      password = tmpPassword;
     }
     return password;
   }
@@ -92,7 +91,7 @@ class App extends React.Component {
         modifiedPassword.push(letter);
       }
     }
-    return modifiedPassword;
+    return modifiedPassword.join("");
   }
 
   lengthModifier(password) {
@@ -105,36 +104,47 @@ class App extends React.Component {
 
   render() {
     return (
-      <div className='container'>
-        <div className='d-flex align-items-center h-100 justify-content-center mt-5'>
-          <h1> { this.getPassword() } </h1>
+      <div className='container-fluid row'>
+        <div className="col-1 row">
+          <div className="col-12">
+            <button className="btn btn-primary mr-2" onClick={() => this.setType('uuid')}>UUID</button>
+            </div>
+            <div className="col-12"> 
+            <button className="btn btn-primary" onClick={() => this.setType('words')}>Words</button>
+            </div>
         </div>
-        <div className="d-flex justify-content-center">
-          <button className="btn btn-primary mr-2" onClick={() => this.setType('uuid')}>UUID</button>
-          <button className="btn btn-primary" onClick={() => this.setType('words')}>Words</button>
+        <div className="col-2">
+          <div className="row">
+            <div className="col-12">
+              <label>
+                <input onChange={(e) => this.toggleSpecialCharacters(e)}
+                  type="checkbox"
+                  name="special-characters">
+                </input>
+                Special Characters
+              </label>
+            </div>
+            <div className="col-12">
+              <label>
+                <input onChange={(e) => this.toggleLengthModifier(e)}
+                  type="checkbox"
+                  name="set-length">
+                </input>
+                Restrict Length
+                <input type="number" name="password-length" defaultValue="16"></input>
+              </label>
+            </div>
+          </div>
         </div>
+        <div className="col-9">
+          <div className='d-flex align-items-center h-100 justify-content-center mt-5'>
+            <h1> { this.getPassword() } </h1>
+          </div>
+        </div>
+        
+        
 
-        <div className="row">
-          <div className="col-12">
-            <label>
-              <input onChange={(e) => this.toggleSpecialCharacters(e)}
-                type="checkbox"
-                name="special-characters">
-              </input>
-              Special Characters
-            </label>
-          </div>
-          <div className="col-12">
-            <label>
-              <input onChange={(e) => this.toggleLengthModifier(e)}
-                type="checkbox"
-                name="set-length">
-              </input>
-              Restrict Length
-              <input type="number" name="password-length" defaultValue="16"></input>
-            </label>
-          </div>
-        </div>
+
       </div>
     );
   }
